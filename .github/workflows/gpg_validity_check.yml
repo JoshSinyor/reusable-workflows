@@ -1,6 +1,20 @@
 name: GPG Validity Check
 
-on: workflow_call
+on:
+  workflow_call:
+    secrets:
+      commit-user-name:
+        required: true
+        default: Joshua Sinyor
+      commit-user-email:
+        required: true
+        default: 74914999+JoshSinyor@users.noreply.github.com
+      gpg-private-key-block:
+        required: true
+        default: ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}
+      gpg-passphrase:
+        required: true
+        default: ${{ secrets.GPG_PASSPHRASE }}
 
 jobs:
   gpg-validity-check:
