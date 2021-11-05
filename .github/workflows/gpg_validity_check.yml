@@ -7,13 +7,13 @@ on:
   workflow_call:
     secrets:
       COMMIT_USER_NAME:
-        required: true
+        required: false
       COMMIT_USER_EMAIL:
-        required: true
+        required: false
       GPG_PRIVATE_KEY_BLOCK:
-        required: true
+        required: false
       GPG_PASSPHRASE:
-        required: true
+        required: false
 
 jobs:
   gpg-validity-check:
