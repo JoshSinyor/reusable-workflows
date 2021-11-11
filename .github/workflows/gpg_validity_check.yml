@@ -20,13 +20,27 @@ on:
 jobs:
   check-if-credentials-supplied:
     runs-on: ubuntu-latest
+    outputs:
+      credentials-supplied: ${{ steps.test-secret-status.outputs.credential-supplied }}
+    steps:
+      - name: Check Secret Status
+        id: test-secret-status
+        run: |
+          if [ ! -z "${{ secrets.TEST_SECRET }}" ]; then
+            echo "::set-output name=credential-supplied::true"
+          fi
+
+  echo-credential-status:
+    needs:
+      - check-if-credentials-supplied
+
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.check-if-credentials-supplied.outputs.credential-supplied == 'true' }}
 
     steps:
-      - name: Echo Status
-        run: |
-          if ${{ secrets.TEST_SECRET }} == false; then
-            echo "TEST_SECRET is false."
-          fi
+      - name: Echo Output
+        run: echo "TEST_SECRET supplied."
 
 #   gpg-validity-check:
 #     runs-on: ubuntu-latest
