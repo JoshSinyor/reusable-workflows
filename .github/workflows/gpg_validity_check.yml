@@ -19,6 +19,8 @@ on:
 
 jobs:
   check-if-credentials-supplied:
+    runs-on: ubuntu-latest
+
     steps:
       - name: Echo Status
         run: |
