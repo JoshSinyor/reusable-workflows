@@ -17,7 +17,7 @@ on:
 
 jobs:
   retrieve-gpg-credentials:
-    uses: JoshSinyor/reusable_workflows/.github/workflows/retrieve_gpg_credentials.yml@f2e819d09423ed887823a1f2306be97fb34b3847
+    uses: JoshSinyor/reusable_workflows/.github/workflows/retrieve_gpg_credentials.yml@06312845f34dc9a35b0cf6d0f9bf5e9d56d7688c
 
 #   gpg-validity-check:
 #     runs-on: ubuntu-latest
