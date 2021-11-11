@@ -33,9 +33,11 @@ jobs:
           if [ ! -z "${{ secrets.TEST_SECRET }}" ]; then
             echo "::set-output name=test-credential-supplied::true"
           fi
+
           if [ ! -z "${{ secrets.GPG_PRIVATE_KEY_BLOCK }}" ]; then
             echo "::set-output name=gpg-private-key-block-supplied::true"
           fi
+
           if [ ! -z "${{ secrets.GPG_PASSPHRASE }}" ]; then
             echo "::set-output name=gpg-passphrase-supplied::true"
           fi
