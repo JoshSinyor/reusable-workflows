@@ -18,8 +18,8 @@ on:
   push:
     branches:
       - calling-workflow-secrets
-      secrets:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    secrets:
+      PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 jobs:
   retrieve-gpg-credentials:
