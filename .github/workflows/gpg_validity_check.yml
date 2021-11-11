@@ -18,11 +18,12 @@ on:
 jobs:
   retrieve-gpg-credentials:
     if: ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}
+    runs-on: ubuntu-latest
 
     steps:
-      name: Display variables.
-      run:
-        echo "GPG_PRIVATE_KEY_BLOCK is true."
+      - name: Display variables.
+        run:
+          echo "GPG_PRIVATE_KEY_BLOCK is true."
 
 #   gpg-validity-check:
 #     runs-on: ubuntu-latest
