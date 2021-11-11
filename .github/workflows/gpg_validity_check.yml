@@ -7,7 +7,7 @@ on:
   workflow_call:
     secrets:
       GPG_PRIVATE_KEY_BLOCK:
-        required: false
+        required: true
       GPG_PASSPHRASE:
         required: false
       TEST_SECRET:
@@ -27,6 +27,9 @@ jobs:
       gpg-passphrase-supplied: ${{ steps.test-secret-status.outputs.gpg-passphrase-supplied }}
 
     steps:
+      - name: Check Variables
+        run: echo "Here are the variables."
+
       - name: Check Secrets Status
         id: secrets-status
         run: |
