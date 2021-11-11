@@ -10,6 +10,8 @@ on:
         required: false
       GPG_PASSPHRASE:
         required: false
+      TEST_SECRET:
+        required: false
 
   # push:
   #   branches:
@@ -17,23 +19,12 @@ on:
 
 jobs:
   check-if-credentials-supplied:
-    runs-on: ubuntu-latest
-
     steps:
       - name: Echo Status
         run: |
-          if ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}; then
-            echo "GPG_PRIVATE_KEY_BLOCK is true."
+          if ${{ secrets.TEST_SECRET }} == false; then
+            echo "TEST_SECRET is false."
           fi
-
-  retrieve-gpg-credentials:
-    if: true
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Display variables.
-        run:
-          echo "GPG_PRIVATE_KEY_BLOCK is true."
 
 #   gpg-validity-check:
 #     runs-on: ubuntu-latest
