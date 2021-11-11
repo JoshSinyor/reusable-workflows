@@ -1,8 +1,8 @@
 name: GPG Validity Check
 
 on:
-  schedule:
-    - cron: '0 7 * * *'
+  # schedule:
+  #   - cron: '0 7 * * *'
 
   workflow_call:
     secrets:
@@ -18,9 +18,9 @@ on:
 jobs:
   check-if-credentials-supplied:
     runs-on: ubuntu-latest
-    
+
     steps:
-      run:
+      run: |
         if ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}; then
           echo "GPG_PRIVATE_KEY_BLOCK is true."
         fi
