@@ -11,13 +11,18 @@ on:
       GPG_PASSPHRASE:
         required: false
 
-  push:
-    branches:
-      - calling-workflow-secrets
+  # push:
+  #   branches:
+  #     - calling-workflow-secrets
 
 jobs:
   retrieve-gpg-credentials:
-    uses: JoshSinyor/reusable_workflows/.github/workflows/retrieve_gpg_credentials.yml@06312845f34dc9a35b0cf6d0f9bf5e9d56d7688c
+    if: ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}
+
+    steps:
+      name: Display variables.
+      run:
+        echo "GPG_PRIVATE_KEY_BLOCK is true."
 
 #   gpg-validity-check:
 #     runs-on: ubuntu-latest
