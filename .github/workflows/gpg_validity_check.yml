@@ -15,56 +15,64 @@ on:
       GPG_PASSPHRASE:
         required: false
 
+  push:
+    branches:
+      - calling-workflow-secrets
+
 jobs:
-  gpg-validity-check:
-    runs-on: ubuntu-latest
+  retrieve-gpg-credentials:
+    uses: JoshSinyor/reusable_workflows/.github/workflows/retrieve_gpg_credentials.yml@d52008ac6aa563d6af1c1187f565671c13a0e02d
+    with:
+      PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
-    env:
-      COMMIT_USER_NAME: ${{ secrets.COMMIT_USER_NAME }}
-      COMMIT_USER_EMAIL: ${{ secrets.COMMIT_USER_EMAIL }}
-      GPG_PRIVATE_KEY_BLOCK: ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-    steps:
-    - name: Import GPG Key
-      run: echo "$GPG_PRIVATE_KEY_BLOCK" | base64 -d | gpg -q --batch --yes --passphrase "$GPG_PASSPHRASE" --import
-
-    - name: Extract keyid and Set GPG_KEYID
-      run: echo "GPG_KEYID=$(gpg -k | awk '/^ / {print $1}')" >> $GITHUB_ENV
-
-# Update GPG key
-
-    - name: Update GPG Key and Warn if Failure
-      run: |
-        gpg --refresh-keys $GPG_KEYID
-        if [ `gpg --refresh-keys $GPG_KEYID &> >(grep -c 'failed')` -ne 0 ] ; then
-          echo "::warning title="Failed to Update GPG Key"::Keyserver refresh failed."
-        fi
-
-# Check if GPG key has expired
-
-    - name: Check if GPG Key Expired
-      run: |
-        if [ `gpg -k $GPG_KEYID &> >(grep -c 'expired')` -ne 0 ] ; then
-          echo "::warning title=GPG Certificate Expired::This repository's GPG certificate has expired."
-          exit 1
-        fi
-
-# Extract key expiry and today dates, and set GPG_EXPIRY
-
-    - name: Extract key expiry and Set GPG_EXPIRY
-      run:
-        exp_date=$(gpg -k $GPG_KEYID | awk '/expire/ {print substr($6,1,10); exit}' | { read exp ; date -d "$exp" +"%s" ; })
-        now_date=$(date +"%Y-%m-%d" | { read now ; date -d "$now" +"%s" ; })
-
-        echo "GPG_EXPIRY=$(( ($exp_date - $now_date) / 86400 ))" >> $GITHUB_ENV
-
-# Notify of days before GPG key expires
-
-    - name: Warn of GPG Key Expiry in Advance
-      if: ${{ (env.GPG_EXPIRY == 0) || (env.GPG_EXPIRY <= 7) && (env.GPG_EXPIRY >= 0) }}
-      run: |
-        echo "::warning title=GPG Certificate Expiring Soon::This repository's GPG certificate will expire in ${{ env.GPG_EXPIRY}} days."
-
-    - name: Notify of GPG Expiry Date
-      run: echo "::notice title=GPG Certificate Expiration::This repository's GPG certificate will expire in ${{ env.GPG_EXPIRY }} days."
+#   gpg-validity-check:
+#     runs-on: ubuntu-latest
+#
+#     env:
+#       COMMIT_USER_NAME: ${{ secrets.COMMIT_USER_NAME }}
+#       COMMIT_USER_EMAIL: ${{ secrets.COMMIT_USER_EMAIL }}
+#       GPG_PRIVATE_KEY_BLOCK: ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}
+#       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+#
+#     - name: Import GPG Key
+#       run: echo "$GPG_PRIVATE_KEY_BLOCK" | base64 -d | gpg -q --batch --yes --passphrase "$GPG_PASSPHRASE" --import
+#
+#     - name: Extract keyid and Set GPG_KEYID
+#       run: echo "GPG_KEYID=$(gpg -k | awk '/^ / {print $1}')" >> $GITHUB_ENV
+#
+# # Update GPG key
+#
+#     - name: Update GPG Key and Warn if Failure
+#       run: |
+#         gpg --refresh-keys $GPG_KEYID
+#         if [ `gpg --refresh-keys $GPG_KEYID &> >(grep -c 'failed')` -ne 0 ] ; then
+#           echo "::warning title="Failed to Update GPG Key"::Keyserver refresh failed."
+#         fi
+#
+# # Check if GPG key has expired
+#
+#     - name: Check if GPG Key Expired
+#       run: |
+#         if [ `gpg -k $GPG_KEYID &> >(grep -c 'expired')` -ne 0 ] ; then
+#           echo "::warning title=GPG Certificate Expired::This repository's GPG certificate has expired."
+#           exit 1
+#         fi
+#
+# # Extract key expiry and today dates, and set GPG_EXPIRY
+#
+#     - name: Extract key expiry and Set GPG_EXPIRY
+#       run:
+#         exp_date=$(gpg -k $GPG_KEYID | awk '/expire/ {print substr($6,1,10); exit}' | { read exp ; date -d "$exp" +"%s" ; })
+#         now_date=$(date +"%Y-%m-%d" | { read now ; date -d "$now" +"%s" ; })
+#
+#         echo "GPG_EXPIRY=$(( ($exp_date - $now_date) / 86400 ))" >> $GITHUB_ENV
+#
+# # Notify of days before GPG key expires
+#
+#     - name: Warn of GPG Key Expiry in Advance
+#       if: ${{ (env.GPG_EXPIRY == 0) || (env.GPG_EXPIRY <= 7) && (env.GPG_EXPIRY >= 0) }}
+#       run: |
+#         echo "::warning title=GPG Certificate Expiring Soon::This repository's GPG certificate will expire in ${{ env.GPG_EXPIRY}} days."
+#
+#     - name: Notify of GPG Expiry Date
+#       run: echo "::notice title=GPG Certificate Expiration::This repository's GPG certificate will expire in ${{ env.GPG_EXPIRY }} days."
