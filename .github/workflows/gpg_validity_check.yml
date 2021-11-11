@@ -16,8 +16,14 @@ on:
   #     - calling-workflow-secrets
 
 jobs:
+  check-if-credentials-supplied:
+    run:
+      if ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}; then
+        echo "GPG_PRIVATE_KEY_BLOCK is true."
+      fi
+
   retrieve-gpg-credentials:
-    if: ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}
+    if: true
     runs-on: ubuntu-latest
 
     steps:
