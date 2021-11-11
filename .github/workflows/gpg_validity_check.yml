@@ -18,7 +18,7 @@ on:
 jobs:
   retrieve-gpg-credentials:
     uses: JoshSinyor/reusable_workflows/.github/workflows/retrieve_gpg_credentials.yml@d52008ac6aa563d6af1c1187f565671c13a0e02d
-    with:
+    env:
       PERSONAL_ACCESS_TOKEN: $PERSONAL_ACCESS_TOKEN
 
 #   gpg-validity-check:
