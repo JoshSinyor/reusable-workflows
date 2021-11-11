@@ -20,10 +20,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      run: |
-        if ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}; then
-          echo "GPG_PRIVATE_KEY_BLOCK is true."
-        fi
+      - name: Echo Status
+        run: |
+          if ${{ secrets.GPG_PRIVATE_KEY_BLOCK }}; then
+            echo "GPG_PRIVATE_KEY_BLOCK is true."
+          fi
 
   retrieve-gpg-credentials:
     if: true
