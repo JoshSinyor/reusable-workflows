@@ -26,9 +26,6 @@ jobs:
       gpg-passphrase-supplied: ${{ steps.secrets-status.outputs.gpg-passphrase-supplied }}
 
     steps:
-      - name: Check Variables
-        run: echo "Here are the variables."
-
       - name: Check Secrets Status
         id: secrets-status
         run: |
@@ -48,41 +45,44 @@ jobs:
             echo "::set-output name=gpg-passphrase-supplied::true"
           fi
 
-  echo-commit-user-name-supplied:
-    needs:
-      - check-if-credentials-supplied
-    runs-on: ubuntu-latest
-    if: ${{ needs.check-if-credentials-supplied.outputs.commit-user-name-supplied == 'true' }}
-    steps:
-      - name: Echo Output
-        run: echo "COMMIT_USER_NAME supplied."
-
-  echo-commit-user-email-supplied:
-    needs:
-      - check-if-credentials-supplied
-    runs-on: ubuntu-latest
-    if: ${{ needs.check-if-credentials-supplied.outputs.commit-user-email-supplied == 'true' }}
-    steps:
-      - name: Echo Output
-        run: echo "COMMIT_USER_EMAIL supplied."
+  # echo-commit-user-name-supplied:
+  #   needs:
+  #     - check-if-credentials-supplied
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.check-if-credentials-supplied.outputs.commit-user-name-supplied == 'true' }}
+  #   steps:
+  #     - name: Echo Output
+  #       run: echo "COMMIT_USER_NAME supplied."
+  #
+  # echo-commit-user-email-supplied:
+  #   needs:
+  #     - check-if-credentials-supplied
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.check-if-credentials-supplied.outputs.commit-user-email-supplied == 'true' }}
+  #   steps:
+  #     - name: Echo Output
+  #       run: echo "COMMIT_USER_EMAIL supplied."
 
   echo-gpg-private-key-block-supplied:
     needs:
       - check-if-credentials-supplied
-    runs-on: ubuntu-latest
+
     if: ${{ needs.check-if-credentials-supplied.outputs.gpg-private-key-block-supplied == 'true' }}
+
+    runs-on: ubuntu-latest
+
     steps:
       - name: Echo Output
         run: echo "GPG_PRIVATE_KEY_BLOCK supplied."
 
-  echo-gpg-passphrase-supplied:
-    needs:
-      - check-if-credentials-supplied
-    runs-on: ubuntu-latest
-    if: ${{ needs.check-if-credentials-supplied.outputs.gpg-passphrase-supplied == 'true' }}
-    steps:
-      - name: Echo Output
-        run: echo "GPG_PASSPHRASE supplied."
+  # echo-gpg-passphrase-supplied:
+  #   needs:
+  #     - check-if-credentials-supplied
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.check-if-credentials-supplied.outputs.gpg-passphrase-supplied == 'true' }}
+  #   steps:
+  #     - name: Echo Output
+  #       run: echo "GPG_PASSPHRASE supplied."
 
 #   gpg-validity-check:
 #     runs-on: ubuntu-latest
