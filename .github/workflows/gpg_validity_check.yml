@@ -6,19 +6,22 @@ on:
 
   workflow_call:
     secrets:
+      COMMIT_USER_NAME:
+        required: false
+      COMMIT_USER_EMAIL:
+        required: false
       GPG_PRIVATE_KEY_BLOCK:
         required: true
       GPG_PASSPHRASE:
-        required: false
-      TEST_SECRET:
-        required: false
+        required: true
 
 jobs:
   check-if-credentials-supplied:
     runs-on: ubuntu-latest
 
     outputs:
-      test-credential-supplied: ${{ steps.secrets-status.outputs.test-credential-supplied }}
+      commit-user-name-supplied: ${{ steps.secrets-status.outputs.commit-user-name-supplied }}
+      commit-user-email-supplied: ${{ steps.secrets-status.outputs.commit-user-name-supplied }}
       gpg-private-key-block-supplied: ${{ steps.secrets-status.outputs.gpg-private-key-block-supplied }}
       gpg-passphrase-supplied: ${{ steps.secrets-status.outputs.gpg-passphrase-supplied }}
 
@@ -29,8 +32,12 @@ jobs:
       - name: Check Secrets Status
         id: secrets-status
         run: |
-          if [ ! -z "${{ secrets.TEST_SECRET }}" ]; then
-            echo "::set-output name=test-credential-supplied::true"
+          if [ ! -z "${{ secrets.COMMIT_USER_NAME }}" ]; then
+            echo "::set-output name=commit-user-name-supplied::true"
+          fi
+
+          if [ ! -z "${{ secrets.COMMIT_USER_EMAIL }}" ]; then
+            echo "::set-output name=commit-user-email-supplied::true"
           fi
 
           if [ ! -z "${{ secrets.GPG_PRIVATE_KEY_BLOCK }}" ]; then
@@ -41,16 +48,25 @@ jobs:
             echo "::set-output name=gpg-passphrase-supplied::true"
           fi
 
-  echo-credential-status:
+  echo-commit-user-name-supplied:
     needs:
       - check-if-credentials-supplied
     runs-on: ubuntu-latest
-    if: ${{ needs.check-if-credentials-supplied.outputs.test-credential-supplied == 'true' }}
+    if: ${{ needs.check-if-credentials-supplied.outputs.commit-user-name-supplied == 'true' }}
     steps:
       - name: Echo Output
-        run: echo "TEST_SECRET supplied."
+        run: echo "COMMIT_USER_NAME supplied."
 
-  echo-credential-status-2:
+  echo-commit-user-email-supplied:
+    needs:
+      - check-if-credentials-supplied
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-if-credentials-supplied.outputs.commit-user-email-supplied == 'true' }}
+    steps:
+      - name: Echo Output
+        run: echo "COMMIT_USER_EMAIL supplied."
+
+  echo-gpg-private-key-block-supplied:
     needs:
       - check-if-credentials-supplied
     runs-on: ubuntu-latest
@@ -59,7 +75,7 @@ jobs:
       - name: Echo Output
         run: echo "GPG_PRIVATE_KEY_BLOCK supplied."
 
-  echo-credential-status-3:
+  echo-gpg-passphrase-supplied:
     needs:
       - check-if-credentials-supplied
     runs-on: ubuntu-latest
